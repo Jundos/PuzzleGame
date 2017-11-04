@@ -5,8 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PuzzleGame"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <DockPanel LastChildFill="True">
-        
+        Title="MainWindow" Height="600" Width="800">
+    <DockPanel LastChildFill="False">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="50">
+            <Button x:Name="btnCheckImage" Content="Вибрати картинку" Margin="10,5,10,5"/>
+
+        </StackPanel>
+        <ScrollViewer DockPanel.Dock="Left" Width="150">
+            <WrapPanel></WrapPanel>
+        </ScrollViewer>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
+            <Grid x:Name="Pole" ShowGridLines="True"/>
+        </ScrollViewer>
+
+
     </DockPanel>
 </Window>
