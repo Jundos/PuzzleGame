@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace PuzzleGame
 {
@@ -64,6 +66,7 @@ namespace PuzzleGame
 
         public void LoadPiece(string uriImage)
         {
+            Podbor.Children.Clear();
             imageSource = new BitmapImage(new Uri(uriImage));
             for (int i = 0; i < 3; i++)
             {
@@ -76,7 +79,7 @@ namespace PuzzleGame
                         Fill = new ImageBrush()
                         {
                             ImageSource = imageSource,
-                            Viewbox = new Rect(0, 0, 0.5, 0.5)
+                            Viewbox = new Rect(0, 0, 1, 1)
                         },
                         Stroke = new SolidColorBrush(Colors.Black),
                         StrokeThickness = 0,
@@ -119,6 +122,22 @@ namespace PuzzleGame
         private void Pole_MouseDown(object sender, MouseButtonEventArgs e)
         {
             MessageBox.Show(Mouse.GetPosition((IInputElement)sender).ToString());
+        }
+
+        private void btnCheckImage_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog()
+            {
+                Filter = "Image files (*.png;*.jpeg)|*.png;*.jpg|All files (*.*)|*.*",
+                Multiselect = false,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                Title = "Check puzzle image"
+            };
+
+            if (openDialog.ShowDialog() == true)
+            {
+                LoadPiece(openDialog.FileName);
+            }
         }
     }
 }

@@ -21,7 +21,7 @@
                     <GradientStop Color="#FFFBEDDB" Offset="0.2"/>
                 </LinearGradientBrush>
             </StackPanel.Background>
-            <Button x:Name="btnCheckImage" Content="Вибрати картинку" Margin="10,5,10,5"/>
+            <Button x:Name="btnCheckImage" Content="Вибрати картинку" Margin="10,5,10,5" Click="btnCheckImage_Click"/>
 
         </StackPanel>
         <Grid  Margin="0" Grid.Row="1">
@@ -29,14 +29,15 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="120" Width="245"/>
+                <ColumnDefinition Width="69.057"/>
+                <ColumnDefinition Width="175.943"/>
                 <ColumnDefinition MinWidth="5" Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ScrollViewer Margin="0">
+            <ScrollViewer Margin="0" Grid.ColumnSpan="2">
                 <WrapPanel x:Name="Podbor" Background="#FFFBEDDB"/>
             </ScrollViewer>
-            <GridSplitter Margin="0" Width="10" Grid.Column="1" HorizontalAlignment="Center">
+            <GridSplitter Margin="0" Width="10" Grid.Column="2" HorizontalAlignment="Center">
                 <GridSplitter.Background>
                     <RadialGradientBrush>
                         <GradientStop Color="#FFDCCDB9" Offset="0"/>
@@ -44,7 +45,7 @@
                     </RadialGradientBrush>
                 </GridSplitter.Background>
             </GridSplitter>
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0" Grid.Column="2" >
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0" Grid.Column="3" >
                 <Grid x:Name="Pole" ShowGridLines="True" MouseDown="Pole_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </ScrollViewer>
         </Grid>
