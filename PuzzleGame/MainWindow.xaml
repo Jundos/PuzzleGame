@@ -5,19 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PuzzleGame"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800">
-    <DockPanel LastChildFill="False">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="50">
+        Title="Puzzle Game" Height="600" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="0">
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.7,0.7" StartPoint="0,0">
+                    <GradientStop Color="#FF97EBFD" Offset="1"/>
+                    <GradientStop Color="#FFFBEDDB" Offset="0.2"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
             <Button x:Name="btnCheckImage" Content="Вибрати картинку" Margin="10,5,10,5"/>
 
         </StackPanel>
-        <ScrollViewer DockPanel.Dock="Left" Width="150">
-            <WrapPanel></WrapPanel>
-        </ScrollViewer>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
-            <Grid x:Name="Pole" ShowGridLines="True"/>
-        </ScrollViewer>
+        <Grid  Margin="0" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="120" Width="245"/>
+                <ColumnDefinition MinWidth="5" Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ScrollViewer Margin="0">
+                <WrapPanel x:Name="Podbor" Background="#FFFBEDDB"/>
+            </ScrollViewer>
+            <GridSplitter Margin="0" Width="10" Grid.Column="1" HorizontalAlignment="Center">
+                <GridSplitter.Background>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#FFDCCDB9" Offset="0"/>
+                        <GradientStop Color="Gainsboro" Offset="1"/>
+                    </RadialGradientBrush>
+                </GridSplitter.Background>
+            </GridSplitter>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0" Grid.Column="2" >
+                <Grid x:Name="Pole" ShowGridLines="True" MouseDown="Pole_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </ScrollViewer>
+        </Grid>
 
 
-    </DockPanel>
+    </Grid>
 </Window>

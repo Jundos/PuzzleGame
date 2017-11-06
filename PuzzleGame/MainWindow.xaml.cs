@@ -22,32 +22,49 @@ namespace PuzzleGame
     {
         //ObservableCollection<ColumnDefinition> coldef = new ObservableCollection<ColumnDefinition>();
         //ObservableCollection<RowDefinition> rowdef = new ObservableCollection<RowDefinition>();
-        protected void CreateColandRowinPole(int Col,int Row)
-        {   
-            for (int i = 0; i < Col; i++)
-            {
+        ImageSource imageSource;
 
+        protected void CreateColandRowinPole(int Cols,int Rows)
+        {   
+            for (int i = 0; i < Cols; i++)
+            {
                 Pole.ColumnDefinitions.Add(new ColumnDefinition()
                 {
                     Width = new GridLength(1, GridUnitType.Star)
                 });
             }
 
-            for (int i = 0; i < Row; i++)
+            for (int i = 0; i < Rows; i++)
             {
                 Pole.RowDefinitions.Add(new RowDefinition()
                 {
-                    Height = new GridLength(120)
+                    Height = new GridLength(1,GridUnitType.Star) 
                 });
+            }
+            int count = 0;
+            for (int col = 0; col < Cols; col++)
+            {
+                for(int row = 0; row < Rows; row++)
+                {
+                    Canvas canvas = new Canvas()
+                    {
+                        Width = 100,
+                        Height = 100,
+                        Background = new SolidColorBrush(Colors.WhiteSmoke),
+                        Margin = new Thickness(0)
+                    };
+                    if (count % 2 != 0) canvas.Background = new LinearGradientBrush(Colors.Brown, Colors.WhiteSmoke, new Point(0, 0), new Point(1, 0.7));
+                    count++;
+                    canvas.SetValue(Grid.RowProperty, row);
+                    canvas.SetValue(Grid.ColumnProperty, col);
+                    Pole.Children.Add(canvas);
+                }
             }
         }
 
-        public MainWindow()
+        public void LoadPiece(string uriImage)
         {
-            InitializeComponent();
-
-            CreateColandRowinPole(3, 3);
-
+            imageSource = new BitmapImage(new Uri(uriImage));
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -56,18 +73,52 @@ namespace PuzzleGame
                     {
                         Width = 100,
                         Height = 100,
-                        Fill = new SolidColorBrush(Colors.BlueViolet),
+                        Fill = new ImageBrush()
+                        {
+                            ImageSource = imageSource,
+                            Viewbox = new Rect(0, 0, 0.5, 0.5)
+                        },
                         Stroke = new SolidColorBrush(Colors.Black),
-                        StrokeThickness = 2,
+                        StrokeThickness = 0,
                         Margin = new Thickness(5)
                     };
-                    rect.SetValue(Grid.RowProperty, i);
-                    rect.SetValue(Grid.ColumnProperty, j);
-                    Pole.Children.Add(rect);
+                    Podbor.Children.Add(rect);
                 }
-                
             }
+        }
 
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            
+
+            CreateColandRowinPole(3, 3);
+
+            LoadPiece("C:/image.jpg");
+
+
+
+            //Path path = new Path();
+            //RectangleGeometry rg = new RectangleGeometry();
+            //ImageSource imageSou = new BitmapImage(new Uri(""));
+            //Rectangle rec = new Rectangle()
+            //{
+            //    Width = 100,
+            //    Height = 100,
+            //    Fill = new ImageBrush()
+            //    {
+            //        ImageSource = imageSou
+            //    }
+            //};
+
+
+
+        }
+
+        private void Pole_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show(Mouse.GetPosition((IInputElement)sender).ToString());
         }
     }
 }
