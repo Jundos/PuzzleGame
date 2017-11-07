@@ -29,15 +29,14 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="69.057"/>
-                <ColumnDefinition Width="175.943"/>
+                <ColumnDefinition Width="245" MinWidth="125"/>
                 <ColumnDefinition MinWidth="5" Width="Auto"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ScrollViewer Margin="0" Grid.ColumnSpan="2">
-                <WrapPanel x:Name="Podbor" Background="#FFFBEDDB"/>
+            <ScrollViewer Margin="0" VerticalScrollBarVisibility="Auto">
+                <WrapPanel x:Name="Podbor" Background="#FFFBEDDB" ItemWidth="100" ItemHeight="100"/>
             </ScrollViewer>
-            <GridSplitter Margin="0" Width="10" Grid.Column="2" HorizontalAlignment="Center">
+            <GridSplitter Margin="0" Width="10" Grid.Column="1" HorizontalAlignment="Center">
                 <GridSplitter.Background>
                     <RadialGradientBrush>
                         <GradientStop Color="#FFDCCDB9" Offset="0"/>
@@ -45,7 +44,7 @@
                     </RadialGradientBrush>
                 </GridSplitter.Background>
             </GridSplitter>
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0" Grid.Column="3" >
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0" Grid.Column="2" >
                 <Grid x:Name="Pole" ShowGridLines="True" MouseDown="Pole_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </ScrollViewer>
         </Grid>

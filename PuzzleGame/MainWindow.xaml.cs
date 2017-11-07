@@ -22,12 +22,25 @@ namespace PuzzleGame
     /// </summary>
     public partial class MainWindow : Window
     {
-        //ObservableCollection<ColumnDefinition> coldef = new ObservableCollection<ColumnDefinition>();
-        //ObservableCollection<RowDefinition> rowdef = new ObservableCollection<RowDefinition>();
-        ImageSource imageSource;
+        #region attribute
+        BitmapSource imageSource;
+        List<Piece> pieces = new List<Piece>();
+        int columns = 1;
+        int rows = 1;
+        #endregion
 
-        protected void CreateColandRowinPole(int Cols,int Rows)
-        {   
+        #region constructor
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            CreateColandRowinPole(5, 3);
+        }
+        #endregion constructor
+
+        #region methods
+        public void CreateColandRowinPole(int Cols, int Rows)
+        {
             for (int i = 0; i < Cols; i++)
             {
                 Pole.ColumnDefinitions.Add(new ColumnDefinition()
@@ -40,13 +53,13 @@ namespace PuzzleGame
             {
                 Pole.RowDefinitions.Add(new RowDefinition()
                 {
-                    Height = new GridLength(1,GridUnitType.Star) 
+                    Height = new GridLength(1, GridUnitType.Star)
                 });
             }
             int count = 0;
             for (int col = 0; col < Cols; col++)
             {
-                for(int row = 0; row < Rows; row++)
+                for (int row = 0; row < Rows; row++)
                 {
                     Canvas canvas = new Canvas()
                     {
@@ -64,71 +77,62 @@ namespace PuzzleGame
             }
         }
 
-        public void LoadPiece(string uriImage)
+        public void CreatePieces(string uriImage)
         {
             Podbor.Children.Clear();
+            pieces.Clear();
             imageSource = new BitmapImage(new Uri(uriImage));
-            for (int i = 0; i < 3; i++)
+            columns = (int)Math.Ceiling(imageSource.PixelWidth / 100.0);
+            rows = (int)Math.Ceiling(imageSource.PixelHeight / 100.0);
+            
+            int index = 0;
+            for (int y = 0; y < rows; y++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int x = 0; x < columns; x++)
                 {
-                    Rectangle rect = new Rectangle
-                    {
-                        Width = 100,
-                        Height = 100,
-                        Fill = new ImageBrush()
-                        {
-                            ImageSource = imageSource,
-                            Viewbox = new Rect(0, 0, 1, 1)
-                        },
-                        Stroke = new SolidColorBrush(Colors.Black),
-                        StrokeThickness = 0,
-                        Margin = new Thickness(5)
-                    };
-                    Podbor.Children.Add(rect);
+                    var piece = new Piece(imageSource,x,y);
+                    piece.Margin = new Thickness(5);
+                    
+                    //piece.MouseLeftButtonUp += new MouseButtonEventHandler(piece_MouseLeftButtonUp); обработчик событий
+                    pieces.Add(piece);
+                    index++;
                 }
             }
-        }
-
-        public MainWindow()
-        {
-            InitializeComponent();
-
             
-
-            CreateColandRowinPole(3, 3);
-
-            LoadPiece("C:/image.jpg");
-
-
-
-            //Path path = new Path();
-            //RectangleGeometry rg = new RectangleGeometry();
-            //ImageSource imageSou = new BitmapImage(new Uri(""));
-            //Rectangle rec = new Rectangle()
-            //{
-            //    Width = 100,
-            //    Height = 100,
-            //    Fill = new ImageBrush()
-            //    {
-            //        ImageSource = imageSou
-            //    }
-            //};
-
-
-
+            RandomPiece(Podbor);
         }
 
+        private void RandomPiece(WrapPanel podbor)
+        {
+            Random rnd = new Random(DateTime.Now.Millisecond);
+            for (int i = 0; i < pieces.Count; i++)
+            {
+
+                int index = rnd.Next(0, pieces.Count);
+                Piece tmp = pieces[i];
+                pieces[i] = pieces[index];
+                pieces[index] = tmp;
+            }
+            foreach (var p in pieces)
+            {
+                podbor.Children.Add(p);
+            }
+
+        }
+        #endregion methods
+
+        #region events
+        //HLAM
         private void Pole_MouseDown(object sender, MouseButtonEventArgs e)
         {
             MessageBox.Show(Mouse.GetPosition((IInputElement)sender).ToString());
-        }
+        } 
 
         private void btnCheckImage_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openDialog = new OpenFileDialog()
             {
-                Filter = "Image files (*.png;*.jpeg)|*.png;*.jpg|All files (*.*)|*.*",
+                Filter = "All Image Files ( JPEG,GIF,BMP,PNG)|*.jpg;*.jpeg;*.gif;*.bmp;*.png|JPEG Files ( *.jpg;*.jpeg )|*.jpg;*.jpeg|GIF Files ( *.gif )|*.gif|BMP Files ( *.bmp )|*.bmp|PNG Files ( *.png )|*.png",
                 Multiselect = false,
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
                 Title = "Check puzzle image"
@@ -136,8 +140,9 @@ namespace PuzzleGame
 
             if (openDialog.ShowDialog() == true)
             {
-                LoadPiece(openDialog.FileName);
+                CreatePieces(openDialog.FileName);
             }
         }
+        #endregion events
     }
 }
