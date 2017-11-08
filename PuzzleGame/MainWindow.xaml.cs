@@ -25,6 +25,7 @@ namespace PuzzleGame
         #region attribute
         BitmapSource imageSource;
         List<Piece> pieces = new List<Piece>();
+        List<Piece> currentSelection = new List<Piece>();
         int columns = 1;
         int rows = 1;
         #endregion
@@ -34,47 +35,21 @@ namespace PuzzleGame
         {
             InitializeComponent();
 
-            CreateColandRowinPole(5, 3);
+            Pole.MouseEnter += new MouseEventHandler(pole_MouseEnter);
+            Pole.MouseMove += new MouseEventHandler(pole_MouseMove);
+            Pole.MouseLeftButtonUp += new MouseButtonEventHandler(pole_MouseLeftButtonUp);
         }
+
         #endregion constructor
 
         #region methods
-        public void CreateColandRowinPole(int Cols, int Rows)
+        public void CreatePole()
         {
-            for (int i = 0; i < Cols; i++)
-            {
-                Pole.ColumnDefinitions.Add(new ColumnDefinition()
-                {
-                    Width = new GridLength(1, GridUnitType.Star)
-                });
-            }
-
-            for (int i = 0; i < Rows; i++)
-            {
-                Pole.RowDefinitions.Add(new RowDefinition()
-                {
-                    Height = new GridLength(1, GridUnitType.Star)
-                });
-            }
-            int count = 0;
-            for (int col = 0; col < Cols; col++)
-            {
-                for (int row = 0; row < Rows; row++)
-                {
-                    Canvas canvas = new Canvas()
-                    {
-                        Width = 100,
-                        Height = 100,
-                        Background = new SolidColorBrush(Colors.WhiteSmoke),
-                        Margin = new Thickness(0)
-                    };
-                    if (count % 2 != 0) canvas.Background = new LinearGradientBrush(Colors.Brown, Colors.WhiteSmoke, new Point(0, 0), new Point(1, 0.7));
-                    count++;
-                    canvas.SetValue(Grid.RowProperty, row);
-                    canvas.SetValue(Grid.ColumnProperty, col);
-                    Pole.Children.Add(canvas);
-                }
-            }
+            Pole.Width = columns * 100;
+            Pole.Height = rows * 100;
+            Pole.Background = new SolidColorBrush(Colors.WhiteSmoke);
+            Pole.Margin = new Thickness(50);
+            Pole.Parent.SetValue(Grid.BackgroundProperty, new SolidColorBrush(Colors.DarkGray));
         }
 
         public void CreatePieces(string uriImage)
@@ -93,7 +68,7 @@ namespace PuzzleGame
                     var piece = new Piece(imageSource,x,y);
                     piece.Margin = new Thickness(5);
                     
-                    //piece.MouseLeftButtonUp += new MouseButtonEventHandler(piece_MouseLeftButtonUp); обработчик событий
+                    piece.MouseLeftButtonUp += new MouseButtonEventHandler(piece_MouseLeftButtonUp);
                     pieces.Add(piece);
                     index++;
                 }
@@ -101,6 +76,8 @@ namespace PuzzleGame
             
             RandomPiece(Podbor);
         }
+
+        
 
         private void RandomPiece(WrapPanel podbor)
         {
@@ -117,16 +94,101 @@ namespace PuzzleGame
             {
                 podbor.Children.Add(p);
             }
-
         }
         #endregion methods
 
         #region events
-        //HLAM
-        private void Pole_MouseDown(object sender, MouseButtonEventArgs e)
+        private void piece_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show(Mouse.GetPosition((IInputElement)sender).ToString());
-        } 
+            var chosenPiece = (Piece)sender;
+
+            if (chosenPiece.Parent is WrapPanel)
+            {
+                if (currentSelection.Count() > 0)
+                {
+                    var p = currentSelection[0];
+                    Pole.Children.Remove(p);
+
+                    Podbor.Children.Add(p);
+
+                    currentSelection.Clear();
+                }
+                else
+                {
+                    Podbor.Children.Remove(chosenPiece);
+                    Pole.Children.Add(chosenPiece);
+                    chosenPiece.Visibility = Visibility.Hidden;
+                    currentSelection.Add(chosenPiece);
+                }
+            }
+        }
+
+        private void pole_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+           // MessageBox.Show(Mouse.GetPosition((IInputElement)sender).ToString());
+        }
+
+        private void pole_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (currentSelection.Count > 0)
+            {
+                foreach (var currentPiece in currentSelection)
+                {
+                    currentPiece.Visibility = Visibility.Visible;
+                }
+            }
+        }
+
+        private void pole_MouseMove(object sender, MouseEventArgs e)
+        {
+            var newX = Mouse.GetPosition((IInputElement)Pole).X;
+            var newY = Mouse.GetPosition((IInputElement)Pole).Y;
+
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+             //   SetSelectionRectangle(initialRectangleX, initialRectangleY, newX, newY);
+            }
+            else
+            {
+                if (currentSelection.Count > 0)
+                {
+                    var firstPiece = currentSelection[0];
+                    foreach (var currentPiece in currentSelection)
+                    {
+                        double CellX = currentPiece.X - firstPiece.X;
+                        double CellY = currentPiece.Y - firstPiece.Y;
+                       
+                        currentPiece.SetValue(Canvas.LeftProperty, newX - 50 + CellX * 100);
+                        currentPiece.SetValue(Canvas.TopProperty, newY - 50 + CellY * 100);
+                    }
+                }
+            }
+        }
+
+        private void pole_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var newX = Mouse.GetPosition(Pole).X;
+            var newY = Mouse.GetPosition(Pole).Y;
+
+            double cellX = (int)((newX) / 100);
+            double cellY = (int)((newY) / 100);
+
+            var firstPiece = currentSelection[0];
+
+            var relativeCellX = currentSelection[0].X - firstPiece.X;
+            var relativeCellY = currentSelection[0].Y - firstPiece.Y;
+
+            double rotatedCellX = relativeCellX;
+            double rotatedCellY = relativeCellY;
+
+            currentSelection[0].X = cellX + rotatedCellX;
+            currentSelection[0].Y = cellY + rotatedCellY;
+
+            currentSelection[0].SetValue(Canvas.LeftProperty, currentSelection[0].X * 100);
+            currentSelection[0].SetValue(Canvas.TopProperty, currentSelection[0].Y * 100);
+
+            currentSelection.Clear();
+        }
 
         private void btnCheckImage_Click(object sender, RoutedEventArgs e)
         {
@@ -141,6 +203,7 @@ namespace PuzzleGame
             if (openDialog.ShowDialog() == true)
             {
                 CreatePieces(openDialog.FileName);
+                CreatePole();
             }
         }
         #endregion events

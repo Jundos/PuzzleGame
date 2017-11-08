@@ -45,7 +45,7 @@
                 </GridSplitter.Background>
             </GridSplitter>
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0" Grid.Column="2" >
-                <Grid x:Name="Pole" ShowGridLines="True" MouseDown="Pole_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Canvas x:Name="Pole" HorizontalAlignment="Center" MouseDown="pole_MouseDown" VerticalAlignment="Center"/>
             </ScrollViewer>
         </Grid>
 
