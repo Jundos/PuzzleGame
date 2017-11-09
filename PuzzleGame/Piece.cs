@@ -13,18 +13,17 @@ namespace PuzzleGame
     {
         #region attributes
         Path path;
-        ImageSource imageSource;
         string imageUri;
-        double x, y;
+        double col, row;
         int index;
         #endregion
 
         #region constructor
-        public Piece(ImageSource imageSource, double x, double y)
+        public Piece(ImageSource imageSource, double col, double row)
         {
             ImageUri = imageUri;
-            X = x;
-            Y = y;
+            Col = col;
+            Row = row;
 
             path = new Path();
             
@@ -36,8 +35,8 @@ namespace PuzzleGame
                 Viewport = new Rect(0, 0, 100, 100),
                 ViewboxUnits = BrushMappingMode.Absolute,
                 Viewbox = new Rect(
-                    x * 100,
-                    y * 100,
+                    col * 100,
+                    row * 100,
                     100,
                     100
                     )
@@ -53,8 +52,8 @@ namespace PuzzleGame
 
         #region properties
         public string ImageUri { get { return imageUri; } set { imageUri = value; } }
-        public double X { get { return x; } set { x = value; } }
-        public double Y { get { return y; } set { y = value; } }
+        public double Col { get { return col; } set { col = value; } }
+        public double Row { get { return row; } set { row = value; } }
         public int Index { get { return index; } set { index = value; } }
         #endregion
 

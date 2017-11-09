@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PuzzleGame"
         mc:Ignorable="d"
-        Title="Puzzle Game" Height="600" Width="800">
+        Title="Puzzle Game" Height="600" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -34,7 +34,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <ScrollViewer Margin="0" VerticalScrollBarVisibility="Auto">
-                <WrapPanel x:Name="Podbor" Background="#FFFBEDDB" ItemWidth="100" ItemHeight="100"/>
+                <WrapPanel x:Name="Podbor" Background="#FFFBEDDB" ItemWidth="100" ItemHeight="100" Cursor="Hand"/>
             </ScrollViewer>
             <GridSplitter Margin="0" Width="10" Grid.Column="1" HorizontalAlignment="Center">
                 <GridSplitter.Background>
@@ -45,7 +45,7 @@
                 </GridSplitter.Background>
             </GridSplitter>
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0" Grid.Column="2" >
-                <Canvas x:Name="Pole" HorizontalAlignment="Center" MouseDown="pole_MouseDown" VerticalAlignment="Center"/>
+                <Canvas x:Name="Pole" HorizontalAlignment="Center" MouseDown="pole_MouseDown" VerticalAlignment="Center" Cursor="Hand"/>
             </ScrollViewer>
         </Grid>
 
