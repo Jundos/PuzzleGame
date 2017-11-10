@@ -38,8 +38,8 @@ namespace PuzzleGame
             Pole.MouseEnter += new MouseEventHandler(pole_MouseEnter);
             Pole.MouseMove += new MouseEventHandler(pole_MouseMove);
             Pole.MouseLeftButtonUp += new MouseButtonEventHandler(pole_MouseLeftButtonUp);
+            Pole.MouseLeave += new MouseEventHandler(pole_MouseLeave);
         }
-
         #endregion constructor
 
         #region methods
@@ -97,12 +97,18 @@ namespace PuzzleGame
             }
         }
 
-        private bool CanInsertPiece(int cellX, int cellY) // !! IT`S DONT WORK !!
+        private bool CanInsertPiece(int cellX, int cellY)
         {
             bool ret = true;
-            foreach (var currentPiece in currentSelection)
+            foreach (Piece piece in Pole.Children)
             {
-                if (currentPiece.Row == cellY && currentPiece.Col == cellX) ret = false;
+                foreach (Piece currentPiece in currentSelection)
+                {
+                    if (currentPiece != piece)
+                    {
+                        if (piece.Row == cellY && piece.Col == cellX) ret = false;
+                    }
+                }
             }
 
             return ret;
@@ -154,23 +160,16 @@ namespace PuzzleGame
             var newX = Mouse.GetPosition((IInputElement)Pole).X;
             var newY = Mouse.GetPosition((IInputElement)Pole).Y;
 
-            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            if (currentSelection.Count > 0)
             {
-                //   SetSelectionRectangle(initialRectangleX, initialRectangleY, newX, newY);
-            }
-            else
-            {
-                if (currentSelection.Count > 0)
+                var firstPiece = currentSelection[0];
+                foreach (var currentPiece in currentSelection)
                 {
-                    var firstPiece = currentSelection[0];
-                    foreach (var currentPiece in currentSelection)
-                    {
-                        double CellX = currentPiece.Row - firstPiece.Row;
-                        double CellY = currentPiece.Col - firstPiece.Col;
-
-                        currentPiece.SetValue(Canvas.LeftProperty, newX - 50 + CellX * 100);
-                        currentPiece.SetValue(Canvas.TopProperty, newY - 50 + CellY * 100);
-                    }
+                    double CellX = currentPiece.Row - firstPiece.Row;
+                    double CellY = currentPiece.Col - firstPiece.Col;
+                    currentPiece.SetValue(Canvas.ZIndexProperty, 2);
+                    currentPiece.SetValue(Canvas.LeftProperty, newX - 50 + CellX * 100);
+                    currentPiece.SetValue(Canvas.TopProperty, newY - 50 + CellY * 100);
                 }
             }
         }
@@ -183,32 +182,30 @@ namespace PuzzleGame
             double cellX = (int)((newX) / 100);
             double cellY = (int)((newY) / 100);
 
-            if (currentSelection.Count > 0 && CanInsertPiece((int)cellX,(int)cellY))
+            if (currentSelection.Count > 0)
             {
-                var firstPiece = currentSelection[0];
+                if (CanInsertPiece((int)cellX, (int)cellY))
+                {
+                    var firstPiece = currentSelection[0];
 
-                var relativeCellX = currentSelection[0].Col - firstPiece.Col;
-                var relativeCellY = currentSelection[0].Row - firstPiece.Row;
+                    var relativeCellX = currentSelection[0].Col - firstPiece.Col;
+                    var relativeCellY = currentSelection[0].Row - firstPiece.Row;
 
-                double rotatedCellX = relativeCellX;
-                double rotatedCellY = relativeCellY;
+                    double rotatedCellX = relativeCellX;
+                    double rotatedCellY = relativeCellY;
 
-                currentSelection[0].Col = cellX + rotatedCellX;
-                currentSelection[0].Row = cellY + rotatedCellY;
+                    currentSelection[0].Col = cellX + rotatedCellX;
+                    currentSelection[0].Row = cellY + rotatedCellY;
 
-                currentSelection[0].SetValue(Canvas.LeftProperty, currentSelection[0].Col * 100);
-                currentSelection[0].SetValue(Canvas.TopProperty, currentSelection[0].Row * 100);
-
-                currentSelection.Clear();
+                    currentSelection[0].SetValue(Canvas.LeftProperty, currentSelection[0].Col * 100);
+                    currentSelection[0].SetValue(Canvas.TopProperty, currentSelection[0].Row * 100);
+                    currentSelection[0].SetValue(Canvas.ZIndexProperty, 1);
+                    currentSelection.Clear();
+                }
             }
             else
             {
-                //var query = from p in pieces
-                //            where
-                //            (p.Col == cellX) && (p.Col == cellX) &&
-                //            (p.Row == cellY) && (p.Row == cellY)
-                //            select p;
-                foreach (var p in pieces)
+                foreach (Piece p in Pole.Children)
                 {
                     if ((p.Col == cellX) && (p.Row == cellY))
                     {
@@ -216,6 +213,19 @@ namespace PuzzleGame
                         currentSelection.Add(p);
                     }
                 }
+            }
+        }
+
+        private void pole_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (currentSelection.Count > 0)
+            {
+                foreach (var p in currentSelection)
+                {
+                    Pole.Children.Remove(p);
+                    Podbor.Children.Add(p);
+                }
+                currentSelection.Clear();
             }
         }
 
