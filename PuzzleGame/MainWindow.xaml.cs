@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,11 +22,13 @@ namespace PuzzleGame
     public partial class MainWindow : Window
     {
         #region attribute
-        BitmapSource imageSource;
+        Image image = new Image();
+        BitmapImage imageSource;
         List<Piece> pieces = new List<Piece>();
         List<Piece> currentSelection = new List<Piece>();
         int columns = 1;
         int rows = 1;
+        int pieceIndex = 0;
         #endregion
 
         #region constructor
@@ -43,8 +44,52 @@ namespace PuzzleGame
         #endregion constructor
 
         #region methods
+        public void LoadImage(string uriImage)
+        {
+            BitmapImage bi = new BitmapImage(new Uri(uriImage));
+
+            columns = (int)Math.Ceiling(bi.PixelWidth / 100.0);
+            rows = (int)Math.Ceiling(bi.PixelHeight / 100.0);
+
+            RenderTargetBitmap rtb = new RenderTargetBitmap(columns * 100, rows * 100, bi.DpiX, bi.DpiY, PixelFormats.Pbgra32);
+
+            var imgBrush = new ImageBrush(bi)
+            {
+                AlignmentX = AlignmentX.Left,
+                AlignmentY = AlignmentY.Top,
+                Stretch = Stretch.Fill
+            };
+
+            var rectImage = new Rectangle
+            {
+                Width = columns * 100,
+                Height = rows * 100,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Fill = imgBrush
+            };
+            rectImage.Arrange(new Rect(0, 0, columns * 100, rows * 100));
+
+            rtb.Render(rectImage);
+
+            var png = new PngBitmapEncoder();
+            png.Frames.Add(BitmapFrame.Create(rtb));
+
+            System.IO.Stream ret = new System.IO.MemoryStream();
+
+            png.Save(ret);
+
+            imageSource = new BitmapImage();
+            imageSource.BeginInit();
+            imageSource.StreamSource = ret;
+            imageSource.EndInit();
+            imageSource.Freeze();
+
+        }
+
         public void CreatePole()
         {
+            Pole.IsEnabled = true;
             Pole.Children.Clear();
             Pole.Width = columns * 100;
             Pole.Height = rows * 100;
@@ -53,27 +98,23 @@ namespace PuzzleGame
             Pole.Parent.SetValue(Grid.BackgroundProperty, new SolidColorBrush(Colors.DarkGray));
         }
 
-        public void CreatePieces(string uriImage)
+        public void CreatePieces()
         {
             Podbor.Children.Clear();
             pieces.Clear();
-            imageSource = new BitmapImage(new Uri(uriImage));
-            columns = (int)Math.Ceiling(imageSource.PixelWidth / 100.0);
-            rows = (int)Math.Ceiling(imageSource.PixelHeight / 100.0);
-
-            int index = 0;
+            pieceIndex = 0;
             for (int y = 0; y < rows; y++)
             {
                 for (int x = 0; x < columns; x++)
                 {
-                    var piece = new Piece(imageSource, x, y)
+                    Piece piece = new Piece(imageSource, x, y)
                     {
                         Margin = new Thickness(5)
                     };
+                    piece.Index = pieceIndex++;
 
                     piece.MouseLeftButtonUp += new MouseButtonEventHandler(piece_MouseLeftButtonUp);
                     pieces.Add(piece);
-                    index++;
                 }
             }
 
@@ -113,6 +154,27 @@ namespace PuzzleGame
 
             return ret;
         }
+
+        private bool IsCompleted()
+        {
+            bool ret = true;
+            int index = 0;
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                ret = false;
+                foreach (Piece p in Pole.Children)
+                {
+                    if (index == (p.Row * rows + p.Col) && index == p.Index)
+                    {
+                        ret = true;
+                        break;
+                    }
+                }
+                if (ret == false) break;
+                index++;
+            }
+            return ret;
+        }
         #endregion methods
 
         #region events
@@ -150,6 +212,7 @@ namespace PuzzleGame
             {
                 foreach (var currentPiece in currentSelection)
                 {
+                    currentPiece.Margin = new Thickness(0);
                     currentPiece.Visibility = Visibility.Visible;
                 }
             }
@@ -202,6 +265,12 @@ namespace PuzzleGame
                     currentSelection[0].SetValue(Canvas.ZIndexProperty, 1);
                     currentSelection.Clear();
                 }
+                if (Podbor.Children.Count == 0)
+                    if (IsCompleted() == true)
+                    {
+                        MessageBox.Show("Puzle is completed");
+                        Pole.IsEnabled = false;
+                    }
             }
             else
             {
@@ -223,6 +292,7 @@ namespace PuzzleGame
                 foreach (var p in currentSelection)
                 {
                     Pole.Children.Remove(p);
+                    p.Margin = new Thickness(5);
                     Podbor.Children.Add(p);
                 }
                 currentSelection.Clear();
@@ -241,9 +311,28 @@ namespace PuzzleGame
 
             if (openDialog.ShowDialog() == true)
             {
-                CreatePieces(openDialog.FileName);
+                LoadImage(openDialog.FileName);
+                CreatePieces();
                 CreatePole();
             }
+        }
+
+        private void btnShowImage_Click(object sender, RoutedEventArgs e)
+        {
+            if (PuzleGrid.Visibility == Visibility.Visible)
+            {
+                PuzleGrid.Visibility = Visibility.Hidden;
+                PuzleImg.Source = imageSource;
+                PuzleImg.Visibility = Visibility.Visible;
+                PuzleImg.Width = columns * 50;
+                PuzleImg.Height = rows * 50;
+            }
+            else
+            {
+                PuzleImg.Visibility = Visibility.Collapsed;
+                PuzleGrid.Visibility = Visibility.Visible;
+            }
+
         }
         #endregion events
     }

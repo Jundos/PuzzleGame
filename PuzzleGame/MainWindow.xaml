@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PuzzleGame"
         mc:Ignorable="d"
         Title="Puzzle Game" Height="600" Width="800" WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid x:Name="GeneralGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition/>
@@ -14,6 +14,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+
+
         <StackPanel Orientation="Horizontal" Margin="0">
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.7,0.7" StartPoint="0,0">
@@ -22,9 +24,10 @@
                 </LinearGradientBrush>
             </StackPanel.Background>
             <Button x:Name="btnCheckImage" Content="Вибрати картинку" Margin="10,5,10,5" Click="btnCheckImage_Click"/>
+            <Button x:Name="btnShowImage" Content="Показати картинку" Margin="10,5,10,5" Click="btnShowImage_Click"/>
 
         </StackPanel>
-        <Grid  Margin="0" Grid.Row="1">
+        <Grid x:Name="PuzleGrid" Margin="0" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition/>
             </Grid.RowDefinitions>
@@ -48,7 +51,6 @@
                 <Canvas x:Name="Pole" HorizontalAlignment="Center" MouseDown="pole_MouseDown" VerticalAlignment="Center" Cursor="Hand"/>
             </ScrollViewer>
         </Grid>
-
-
+        <Image Name="PuzleImg" Height="100" Width="100" Grid.Row="1" Visibility="Collapsed"/>
     </Grid>
 </Window>

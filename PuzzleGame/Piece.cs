@@ -30,7 +30,7 @@ namespace PuzzleGame
             path.Fill = new ImageBrush()
             {
                 ImageSource = imageSource,
-                Stretch = Stretch.Uniform,
+                Stretch = Stretch.Fill,
                 ViewportUnits = BrushMappingMode.Absolute,
                 Viewport = new Rect(0, 0, 100, 100),
                 ViewboxUnits = BrushMappingMode.Absolute,
