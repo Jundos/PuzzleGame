@@ -95,7 +95,7 @@ namespace PuzzleGame
             Pole.Height = rows * 100;
             Pole.Background = new SolidColorBrush(Colors.WhiteSmoke);
             Pole.Margin = new Thickness(50);
-            Pole.Parent.SetValue(Grid.BackgroundProperty, new SolidColorBrush(Colors.DarkGray));
+            Pole.Parent.SetValue(Grid.BackgroundProperty, new SolidColorBrush(Colors.LightSkyBlue));
         }
 
         public void CreatePieces()
@@ -312,6 +312,7 @@ namespace PuzzleGame
             if (openDialog.ShowDialog() == true)
             {
                 LoadImage(openDialog.FileName);
+                btnShowImage.IsEnabled = true;
                 CreatePieces();
                 CreatePole();
             }
@@ -324,8 +325,7 @@ namespace PuzzleGame
                 PuzleGrid.Visibility = Visibility.Hidden;
                 PuzleImg.Source = imageSource;
                 PuzleImg.Visibility = Visibility.Visible;
-                PuzleImg.Width = columns * 50;
-                PuzleImg.Height = rows * 50;
+                PuzleImg.Stretch = Stretch.Uniform;
             }
             else
             {
