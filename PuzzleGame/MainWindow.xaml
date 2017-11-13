@@ -14,8 +14,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-
-
         <StackPanel Orientation="Horizontal" Margin="0">
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.7,0.7" StartPoint="0,0">
@@ -39,9 +37,8 @@
                     </RadialGradientBrush>
                 </Button.Background>
             </Button>
-
         </StackPanel>
-        <Grid x:Name="PuzleGrid" Margin="0" Grid.Row="1">
+        <Grid x:Name="PuzzleGrid" Margin="0" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition/>
             </Grid.RowDefinitions>
@@ -65,6 +62,6 @@
                 <Canvas x:Name="Pole" HorizontalAlignment="Center" MouseDown="pole_MouseDown" VerticalAlignment="Center" Cursor="Hand"/>
             </ScrollViewer>
         </Grid>
-        <Image Name="PuzleImg" Grid.Row="1" Visibility="Collapsed"/>
+        <Image Name="PuzzleImg" Grid.Row="1" Visibility="Collapsed"/>
     </Grid>
 </Window>

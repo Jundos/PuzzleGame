@@ -1,24 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 
 namespace PuzzleGame
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         #region attribute
@@ -76,8 +68,8 @@ namespace PuzzleGame
             png.Frames.Add(BitmapFrame.Create(rtb));
 
             System.IO.Stream ret = new System.IO.MemoryStream();
-
-            png.Save(ret);
+           
+            png.Save(ret); 
 
             imageSource = new BitmapImage();
             imageSource.BeginInit();
@@ -257,18 +249,20 @@ namespace PuzzleGame
                     double rotatedCellX = relativeCellX;
                     double rotatedCellY = relativeCellY;
 
-                    currentSelection[0].Col = cellX + rotatedCellX;
-                    currentSelection[0].Row = cellY + rotatedCellY;
-
-                    currentSelection[0].SetValue(Canvas.LeftProperty, currentSelection[0].Col * 100);
-                    currentSelection[0].SetValue(Canvas.TopProperty, currentSelection[0].Row * 100);
-                    currentSelection[0].SetValue(Canvas.ZIndexProperty, 1);
+                    foreach (Piece currentPiece in currentSelection)
+                    {
+                        currentPiece.Col = cellX + rotatedCellX;
+                        currentPiece.Row = cellY + rotatedCellY;
+                        currentPiece.SetValue(Canvas.LeftProperty, currentPiece.Col * 100);
+                        currentPiece.SetValue(Canvas.TopProperty, currentPiece.Row * 100);
+                        currentPiece.SetValue(Canvas.ZIndexProperty, 1);
+                    }
                     currentSelection.Clear();
                 }
                 if (Podbor.Children.Count == 0)
                     if (IsCompleted() == true)
                     {
-                        MessageBox.Show("Puzle is completed");
+                        MessageBox.Show("Puzzle is completed");
                         Pole.IsEnabled = false;
                     }
             }
@@ -320,17 +314,17 @@ namespace PuzzleGame
 
         private void btnShowImage_Click(object sender, RoutedEventArgs e)
         {
-            if (PuzleGrid.Visibility == Visibility.Visible)
+            if (PuzzleGrid.Visibility == Visibility.Visible)
             {
-                PuzleGrid.Visibility = Visibility.Hidden;
-                PuzleImg.Source = imageSource;
-                PuzleImg.Visibility = Visibility.Visible;
-                PuzleImg.Stretch = Stretch.Uniform;
+                PuzzleGrid.Visibility = Visibility.Hidden;
+                PuzzleImg.Source = imageSource;
+                PuzzleImg.Visibility = Visibility.Visible;
+                PuzzleImg.Stretch = Stretch.Uniform;
             }
             else
             {
-                PuzleImg.Visibility = Visibility.Collapsed;
-                PuzleGrid.Visibility = Visibility.Visible;
+                PuzzleImg.Visibility = Visibility.Collapsed;
+                PuzzleGrid.Visibility = Visibility.Visible;
             }
 
         }

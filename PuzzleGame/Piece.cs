@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Controls;
@@ -56,6 +52,5 @@ namespace PuzzleGame
         public double Row { get { return row; } set { row = value; } }
         public int Index { get { return index; } set { index = value; } }
         #endregion
-
     }
 }
